@@ -130,10 +130,14 @@ class YoutubePlayer extends StatefulWidget {
   /// {@endtemplate}
   final bool showVideoProgressIndicator;
 
+  /// focus node for the player
+  final FocusNode focusNode;
+
   /// Creates [YoutubePlayer] widget.
   const YoutubePlayer({
     this.key,
     required this.controller,
+    required this.focusNode,
     this.width,
     this.aspectRatio = 16 / 9,
     this.controlsTimeOut = const Duration(seconds: 3),
@@ -236,53 +240,56 @@ class _YoutubePlayerState extends State<YoutubePlayer> {
     return Material(
       elevation: 0,
       color: Colors.black,
-      child: InheritedYoutubePlayer(
-        controller: controller,
-        child: Container(
-          color: Colors.black,
-          width: widget.width ?? MediaQuery.of(context).size.width,
-          child: _buildPlayer(
-            errorWidget: Container(
-              color: Colors.black87,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: 5.0),
-                      Expanded(
-                        child: Text(
-                          errorString(
-                            controller.value.errorCode,
-                            videoId: controller.metadata.videoId.isNotEmpty
-                                ? controller.metadata.videoId
-                                : controller.initialVideoId,
-                          ),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 15.0,
+      child: Focus(
+        focusNode: widget.focusNode,
+        child: InheritedYoutubePlayer(
+          controller: controller,
+          child: Container(
+            color: Colors.black,
+            width: widget.width ?? MediaQuery.of(context).size.width,
+            child: _buildPlayer(
+              errorWidget: Container(
+                color: Colors.black87,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 40.0, vertical: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.error_outline,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 5.0),
+                        Expanded(
+                          child: Text(
+                            errorString(
+                              controller.value.errorCode,
+                              videoId: controller.metadata.videoId.isNotEmpty
+                                  ? controller.metadata.videoId
+                                  : controller.initialVideoId,
+                            ),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 15.0,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Error Code: ${controller.value.errorCode}',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w300,
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16.0),
+                    Text(
+                      'Error Code: ${controller.value.errorCode}',
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

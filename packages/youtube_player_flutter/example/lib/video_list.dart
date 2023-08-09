@@ -37,6 +37,7 @@ class _VideoListState extends State<VideoList> {
       body: ListView.separated(
         itemBuilder: (context, index) {
           return YoutubePlayer(
+            focusNode: FocusNode(),
             key: ObjectKey(_controllers[index]),
             controller: _controllers[index],
             actionsPadding: const EdgeInsets.only(left: 16.0),
